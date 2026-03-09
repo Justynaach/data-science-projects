@@ -1,0 +1,157 @@
+---
+title: "Analiza Przeżywalności Pasażerów Titanica"
+author: "Justyna"
+date: "2026-03-09"
+output: html_document
+---
+
+## Wczytanie bibliotek
+```{r}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+
+library(Hmisc)
+library(e1071)
+library(tidyverse)
+library(ggplot2)
+
+```
+
+## Wczytanie i czyszczenie danych
+
+```{r}
+titanic <- read.csv("titanic_new.csv")
+# usuniecie wartosci, ktore nie sa ani 1 ani 0
+titanic <- titanic[titanic$Survived %in% c(0, 1), ]
+
+#sprawdzenie dupliaktow
+duplicated <- duplicated(titanic)
+
+#liczba duplikatow
+sum(duplicated)
+
+#usuniecie kolumn nieistotnych
+titanic$Passenger.Id <- NULL
+titanic$Name <- NULL
+titanic$Cabin <- NULL
+titanic$Ticket <- NULL
+
+#sprawdzenie typu danych zmiennej Fare
+typeof(titanic$Fare)
+#zmianna typu
+titanic$Fare <- as.numeric(gsub("'", "", titanic$Fare))
+
+colSums(is.na(titanic))
+sum(titanic$Embarked == "")
+
+titanic$Age <- Hmisc::impute(titanic$Age, fun = median)
+
+# imputacja kolumny Embarked 
+titanic$Embarked[trimws(titanic$Embarked) == ""] <- NA
+titanic$Embarked <- Hmisc::impute(titanic$Embarked, mode)
+
+# kodowanie zmiennych kategorycznych
+titanic$Sex <- ifelse(titanic$Sex == "male", 0, 1)
+titanic$Embarked <- as.factor(titanic$Embarked)
+embarked_dummies <- model.matrix(~ Embarked - 1, data = titanic)
+titanic <- cbind(titanic, embarked_dummies)
+titanic$Embarked <- NULL
+
+detect_outliers_iqr <- function(x) {
+  Q1 <- quantile(x, 0.25, na.rm = TRUE)
+  Q3 <- quantile(x, 0.75, na.rm = TRUE)
+  IQR <- Q3 - Q1
+  lower <- Q1 - 1.5 * IQR
+  upper <- Q3 + 1.5 * IQR
+  return(which(x < lower | x > upper))
+}
+
+outliers_fare <- detect_outliers_iqr(titanic$Fare)
+length(outliers_fare) 
+titanic[outliers_fare, c("Fare")]
+
+outliers_age <- detect_outliers_iqr(titanic$Age)
+length(outliers_age)
+titanic[outliers_age, c("Age")]
+
+titanic$Relatives <- titanic$SibSp + titanic$Parch
+```
+
+## Analiza danych
+
+
+
+```{r}
+round(mean(titanic$Age) ,2)
+
+sum(titanic$Sex == 1)
+sum(titanic$Sex == 0)
+nrow(titanic)
+#liczba dzieci (wiek ponizej 18)
+sum(titanic$Age < 18)
+
+sum(titanic$Survived == 1 & titanic$Sex == 0)
+#liczba kobiet, ktore przezyly
+sum(titanic$Survived == 1 & titanic$Sex == 1)
+sum(titanic$Survived == 1 & titanic$Age < 18)
+round(mean(titanic$Age[titanic$Survived == 1]),2)
+
+median(titanic$Age)
+hist(titanic$Age, main="wiek", col = "lightgreen", xlab="wiek")
+
+round(mean(titanic$Age),2)
+median(titanic$Age)
+round(mean(titanic$Age[titanic$Survived==1]),2)
+median(titanic$Age[titanic$Survived==1])
+round(skewness(titanic$Age),3)
+round(kurtosis(titanic$Age),3)
+
+round(mean(titanic$Fare),2)
+round(median(titanic$Fare),2)
+
+round(mean(titanic$Fare[titanic$Survived==1]),2)
+median(titanic$Fare[titanic$Survived==1])
+
+round(skewness(titanic$Fare),3)
+round(kurtosis(titanic$Fare),3)
+
+par(mfrow = c(1, 2))
+```
+
+#EDA
+
+```{r}
+par(mfrow = c(1, 2))
+hist(titanic$Fare, 
+     main = "Wszyscy pasażerowie", 
+     xlab = "Opłata (Fare)", 
+     col = "lightblue", 
+     border = "white")
+
+hist(titanic$Fare[titanic$Survived == 1], 
+     main = "Ocalali", 
+     xlab = "Opłata (Fare)", 
+     col = "lightpink", 
+     border = "white")
+par(mfrow = c(1, 1))
+```
+
+
+```{r}
+sum(titanic$Pclass==1)
+sum(titanic$Pclass==2)
+sum(titanic$Pclass==3)
+ggplot(titanic, aes(x = Pclass))+geom_bar(fill = c("skyblue", "orange", "lightgreen"))
+```
+
+##Weryfikacja statystyczna (test Shapiro-Wilka oraz analiza korelacji Spearmana)
+```{r}
+shapiro.test(titanic$Fare)
+shapiro.test(titanic$Pclass)
+shapiro.test(titanic$Relatives)
+
+cor.test(titanic$Survived, titanic$Sex, method = "spearman")
+cor.test(titanic$Survived, titanic$Fare, method = "spearman")
+cor.test(titanic$Survived, titanic$Pclass, method = "spearman")
+cor.test(titanic$Relatives, titanic$Survived, method = "spearman")
+```
