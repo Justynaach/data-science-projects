@@ -44,3 +44,4 @@ plt.show()
 
 today = date.today()
 df.to_csv(f"ceny_motocykli_{today}.csv", index=False)
+
