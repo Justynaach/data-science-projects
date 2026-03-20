@@ -2,8 +2,10 @@ OLX Motorcycle Market Scraper
 
 Automated tool for monitoring motorcycle market trends on OLX.pl. The project automates the data acquisition process for the first 5 pages of search results and visualizes the correlation between manufacturing year and price.
 
-Tech
-Python (Core logic)
+Language:
+Python
+
+Libraries:
 BeautifulSoup4 (Web scraping)
 Pandas (Data cleaning and transformation) 
 Seaborn and Matplotlib (Visualization)
