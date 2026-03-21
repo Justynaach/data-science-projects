@@ -1,6 +1,6 @@
 # Titanic Survival Prediction End-to-End ML
 
-## --ABOUT THE PROJECT--
+## ABOUT THE PROJECT
 
 This project goes beyond simple classification by implementing a rigorous data cleaning and preprocessing pipeline for the famous Titanic dataset. The goal is to predict passenger survival while ensuring high data quality through statistical analysis and interactive simulation.
 
