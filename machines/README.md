@@ -23,8 +23,7 @@ RNF Random Failures
 
 The project focuses on the prediction on Tool wear (min). The goal is to estimate the amount of time the machine would work before failure based on operational parameters like temperature, torque, and rotational speed.
 
-Language:
-Python
+Language: Python
 Libraries:
 Seaborn and Matplotlib (Vizualization)
 Sklearn ( One Hot Encoding, )
