@@ -20,5 +20,3 @@ Dynamic Reporting: Generates timestamped CSV reports for historical price tracki
 ### Example of usage(20.03.2026):
 ![alt text](image.png)
 
-![alt text](image.png)
-
