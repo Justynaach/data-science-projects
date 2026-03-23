@@ -1,4 +1,4 @@
---ABOUT THE DATASET--
+# ABOUT THE DATASET
 
 The dataset has 10 000 data points stored as rows with 14 features in column.
 
@@ -19,7 +19,7 @@ PWF Power Failure
 OSF Overstrain Failure
 RNF Random Failures 
 
---MACHINES PROJECT--
+# MACHINES PROJECT
 
 The project focuses on the prediction on Tool wear (min). The goal is to estimate the amount of time the machine would work before failure based on operational parameters like temperature, torque, and rotational speed.
 
@@ -31,7 +31,7 @@ Sklearn ( One Hot Encoding, )
 ....
 
 
-Key Points:
+## Key Points:
 Outliers in Torque and Rotational Speed were retained after analysis, as they represent critical operational extremes rather than data errors.
 
 All failure-related columns were dropped from the feature set (X).
