@@ -50,5 +50,6 @@ While the rotational speed maintains a median of 1500 RPM, the distribution show
 The visualization reveals a significant class imbalance within the dataset
 
 ![alt text](output3.png)
+
 The correlation heatmap provides a comprehensive overview of the linear relationships between parameters. A dominant feature is the negative correlation between Rotational Speed and Torque, which is consistent with the physical laws. Regarding the categorical features (Type_H, Type_L, Type_M), the strong negative correlations observed between them are a direct mathematical consequence of the One-Hot Encoding process. 
 While Machine failure and specific failure modes (for instance TWF, HDF) show visible correlations with tool wear, they will be excluded from the feature set to prevent data leakage, ensuring the model remains predictive rather than reactive.
